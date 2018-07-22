@@ -30,7 +30,8 @@ def print_summary(names, show_all):
 
 def list_files(directory, extensions, sorting=1, all_files=1):
     """
-    Print names of desired and other files in directory and all subdirectories
+    Print names of files with specified extension(s) in given directory
+    and its subdirectories. By default list other files and extensions found
 
     - Print names of files with specified extensions
     - Print names of other files and extensions found -- optional
@@ -83,9 +84,12 @@ def list_files(directory, extensions, sorting=1, all_files=1):
                 names["Other extensions"].add("." + file.split(".")[-1])
 
     if sorting == 1:
-        names["Desired files"] = sorted(names["Desired files"], key=lambda x: x.lower())
-        names["Other files"] = sorted(names["Other files"], key=lambda x: x.lower())
-        names["Other extensions"] = sorted(names["Other extensions"], key=lambda x: x.lower())
+        names["Desired files"] = sorted(names["Desired files"],
+                                        key=lambda x: x.lower())
+        names["Other files"] = sorted(names["Other files"],
+                                      key=lambda x: x.lower())
+        names["Other extensions"] = sorted(names["Other extensions"],
+                                           key=lambda x: x.lower())
 
     #Print
     print_files(names, all_files)
