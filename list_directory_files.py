@@ -54,8 +54,7 @@ def list_files(directory, extensions, sorting=1, all_files=1):
 
     try:
         " ".endswith(tuple(extensions))
-    except Exception as err:
-        print(err)
+    except:
         print("\nWrong extensions format:\n" \
               "Extensions must be a:\n" \
               "\t- string\n"\
@@ -91,7 +90,6 @@ def list_files(directory, extensions, sorting=1, all_files=1):
         names["Other extensions"] = sorted(names["Other extensions"],
                                            key=lambda x: x.lower())
 
-    #Print
     print_files(names, all_files)
     print_summary(names, all_files)
 
