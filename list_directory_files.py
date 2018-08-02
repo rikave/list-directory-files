@@ -3,18 +3,13 @@ import sys
 from collections import OrderedDict
 
 
-def directory_walker(directory):
-    """Perform os.walk in directory"""
-    return os.walk(directory)
-
-
 def print_files(names, show_all):
     """Print filenames or extensions from a list"""
     for name, file_list in names.items():
         print("\n#### {} ####".format(name))
-        for file in file_list:
-            print("{}".format(file))
-        #Return after printing desired files (dicts are sorted
+        for filename in file_list:
+            print("{}".format(filename))
+        #Return after printing desired files
         if not show_all:
             return
 
@@ -49,15 +44,14 @@ def list_files(directory, extensions, sorting=1, all_files=1):
     """
 
     if not isinstance(directory, str):
-        print("A string with path is expected.")
+        print("\nDirectory should be a path to your folder in string format.")
         return
 
     try:
         " ".endswith(tuple(extensions))
     except:
-        print("\nWrong extensions format:\n" \
-              "Extensions must be a:\n" \
-              "\t- string\n"\
+        print("\nExtensions should be a:\n"
+              "\t- string\n"
               "\t- tuple/list/set of strings")
         return
 
@@ -67,37 +61,34 @@ def list_files(directory, extensions, sorting=1, all_files=1):
         "Other extensions": set(),
     }
 
-    # Older python versions compatibility
+    # Older Python versions compatibility
+    # Note: dicts keep original order since Python 3.6
     if sys.version < "3.6":
         order = ["Desired files", "Other files", "Other extensions"]
         names = OrderedDict(sorted(names.items(),
                                    key=lambda x: order.index(x[0])))
 
-    # Walk through files and add their names to lists
-    for _, _, files in directory_walker(directory):
-        for file in files:
-            if file.endswith(tuple(extensions)):
-                names["Desired files"].append(file)
+    # Walk through files and add their name/extension to lists
+    for _, _, files in os.walk(directory):
+        for filename in files:
+            if filename.endswith(tuple(extensions)):
+                names["Desired files"].append(filename)
             elif all_files == 1:
-                names["Other files"].append(file)
-                names["Other extensions"].add("." + file.split(".")[-1])
+                names["Other files"].append(filename)
+                names["Other extensions"].add("." + filename.split(".")[-1])
 
     if sorting == 1:
-        names["Desired files"] = sorted(names["Desired files"],
-                                        key=lambda x: x.lower())
-        names["Other files"] = sorted(names["Other files"],
-                                      key=lambda x: x.lower())
-        names["Other extensions"] = sorted(names["Other extensions"],
-                                           key=lambda x: x.lower())
+        for name in names:
+            names[name] = sorted(names[name], key=lambda x: x.lower())
 
     print_files(names, all_files)
     print_summary(names, all_files)
 
 
 if __name__ == "__main__":
-    #e.g. directory = "E:/Music"
+    # e.g. directory = "E:/Music"
     directory = "your/folder/location"
-    # e.g. [".mp3", ".wav"]
-    extensions = [".mp3"]
-    # list_files(directory, extensions, sorting=1, all_files=1)
+    # e.g. extensions = [".mp3", ".wav"]
+    extensions = [".mp3", ".wav"]
+    # e.g. list_files(directory, extensions, sorting=1, all_files=1)
     list_files(directory, extensions)
